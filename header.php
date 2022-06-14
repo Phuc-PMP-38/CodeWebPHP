@@ -1,266 +1,207 @@
 <?php 
+ob_start();
 session_start();
-include'sql/card.funcion.php';
-include'sql/connect.php';
-$cats = mysqli_query($conn,"SELECT * FROM category"); 
-$customer = mysqli_query($conn,"SELECT *FROM customer");
-?>
-<!doctype html>
-<html lang="en">
+include'../sql/connect.php';
+if (!isset($_SESSION['admin_login'])) {
+header('location:login.php');
+  }else {
+    $admin =$_SESSION['admin_login'];
+  }
+ ?>
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Shop Gấu Bông</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
- <link href='http://fonts.googleapis.com/css?family=Oswald:400,700' rel='stylesheet' type='text/css'> 
- <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
- <link href='http://fonts.googleapis.com/css?family=Bitter:400,700,400italic&amp;subset=latin,latin-ext' rel='stylesheet' type='text/css'>
- <link rel="stylesheet" href="css/animate.css">         
- <!-- <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"> -->
- <link rel="stylesheet" href="css/jquery.fancybox.css">     
- <link rel="stylesheet" href="css/jquery.bxslider.css">                 
- <link rel="stylesheet" href="css/meanmenu.min.css">        
- <link rel="stylesheet" href="css/jquery-ui-slider.css">                
- <link rel="stylesheet" href="css/nivo-slider.css">
- <link rel="stylesheet" href="css/owl.carousel.css">
- <link rel="stylesheet" href="css/owl.theme.css">
- <link rel="stylesheet" href="css/bootstrap.min.css">
- <link rel="stylesheet" href="css/font-awesome.min.css">
- <link rel="stylesheet" href="css/normalize.css">
- <link rel="stylesheet" href="css/main.css">
- <link rel="stylesheet" type="text/css" href="css/stylemoi.css">
- <link rel="stylesheet" href="css/style.css">
- <link rel="stylesheet" href="css/responsive.css">
- <link rel="stylesheet" href="css/ie.css">  
- <link rel="stylesheet" type="text/css" href="css/stylec.css">  
- <style type="text/css" media="screen">
- label {
-    display: inline-block;
-}
-input[type="text"], input[type="password"] {
-    display: inline-block;
-    
-}
-label.error {
-    display: inline-block;
-    color:red;
-    
-}
-
-
-
-
-</style>
-<script src="js/vendor/modernizr-2.6.2.min.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>ADMIN</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/AdminLTE.css">
+  <link rel="stylesheet" href="css/_all-skins.min.css">
+  <link rel="stylesheet" href="css/jquery-ui.css">
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/angular.min.js"></script>
+  <script src="js/app.js"></script>
 </head>
-<body class="index-2">
-   <!-- TOPMENU: START-->
-   
-    <section class="header-middle">
-       <div class="container">
-          <div class="row">
-             <div class="col-sm-12">
-                <!-- LOGO START -->
-                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2">
-                    <div class="logo">
-                   <a href="index.php"><img src="img/logo.png" alt="bstore logo" /></a>
-               </div>
-                </div>
-                
-               <!-- LOGO END -->
-               <!-- HEADER-RIGHT-CALLUS START -->
-               <div class="header-right-callus">
-                   <h3>Tư Vấn Mua Hàng</h3>
-                   <span>0976 972 771</span>
-               </div>
-               <!-- HEADER-RIGHT-CALLUS END -->
-               <!-- CATEGORYS-PRODUCT-SEARCH START -->
-               
-               <div class="categorys-product-search">
-                <form action="search.php" method="GET" class="search-form-cat" >
-                    <div class="search-product form-group">
-                        <input type="text" class="form-control search-form" name="ten_sp" placeholder="Nhập Tên Sản Phẩm ... " required />
-                        <button class="search-button" type="submit">
-                            <i class="fa fa-search"></i>
-                        </button>                             
-                    </div>
-                </form>
-            </div>
-            <!-- CATEGORYS-PRODUCT-SEARCH END -->
-        </div>
-    </div>
-</div>
-</section>
-<!-- HEADER-MIDDLE END -->
-<!-- MAIN-MENU-AREA START -->
-<header class="main-menu-area">
-   <div class="container">
-      <div class="row">
-         <!-- SHOPPING-CART START -->
-         <?php 
-         $gio_hang = isset($_SESSION['gio-hang']) ? $_SESSION['gio-hang'] : [];
-         ?>
-         
-         <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 pull-right shopingcartarea">
-            <div class="shopping-cart-out pull-right">
-                <div class="shopping-cart">
-                    
-                    <a class="shop-link" href="shop-cart.php" title="View my shopping cart">
-                        <i class="fa fa-shopping-cart cart-icon"></i>
-                        <b>Giỏ Hàng</b>
-                        <span class="ajax-cart-quantity"><?php echo tong_so_luong();?></span>
+<body class="hold-transition skin-blue sidebar-mini">
+<!-- Site wrapper -->
+<div class="wrapper">
+
+  <header class="main-header">
+    <!-- Logo -->
+    <a href="index.php" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><b>AD</b></span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><b>Trang Chủ Quản Trị</b></span>
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <!-- Messages: style can be found in dropdown.less-->
+          <li class="dropdown messages-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            
+            </a>
+            <ul class="dropdown-menu">
+              
+                <!-- inner menu: contains the actual data -->
+                <ul class="menu">
+                  <li><!-- start message -->
+                    <a href="#">
+                      <div class="pull-left">
+                        <img src="<?php echo $admin['avatar']; ?>" class="img-circle" alt="User Image">
+                      </div>
+                  
+                      
                     </a>
-         
-                    <div class="shipping-cart-overly" id="cart-mini">
-                        <?php foreach ($gio_hang as $gh) { ?>                            
-                            <div class="shipping-item">
-                               <a href="xu-ly-gio-hang.php?id=<?php echo $gh['id'];?>&action=delete" class="cart_quantity_delete">   <span class="cross-icon"><i class="fa fa-times-circle"></i></span> </a> 
-                               <div class="shipping-item-image">
-                                <a href=""><img width="50px" src="uploads/<?php echo $gh['image']; ?>" alt="shopping image" /></a>
-                            </div>
-
-                            <div class="shipping-item-text">
-                                <span> <?php echo $gh['quantity']; ?><span class="pro-quan-x">x</span> <a href="#" class="pro-cat"><?php echo $gh['name']; ?></a></span>
-                                <span class="pro-quality"><a href="#"></a></span>
-                                <p><?php echo number_format($gh['price']); ?>VNĐ</p>
-                            </div>
-                        </div>
-                    <?php }?>
-                
-                    <div class="shipping-total-bill">
-                        <div class="total-shipping-prices">
-                            <span class="shipping-total"><?php echo number_format(tongtien()); ?></span>
-                            <span>Tổng Tiền</span>
-                        </div>                                      
-                    </div>
+                  </li>
+                  <!-- end message -->
+                </ul>
+              </li>
+              <li class="footer"><a href="#">See All Messages</a></li>
+            </ul>
+          </li>
+          <!-- Notifications: style can be found in dropdown.less -->
+          <li class="dropdown notifications-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+             
+            </a>
+            <ul class="dropdown-menu">
+              
+              <li>
+                <!-- inner menu: contains the actual data -->
+                <ul class="menu">
+                  <li>
+                    <a href="#">
                     
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              
+            </ul>
+          </li>
+          <!-- Tasks: style can be found in dropdown.less -->
+          
+          <!-- User Account: style can be found in dropdown.less -->
+          <li class="dropdown user user-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <img src="../img/messi_1.jpg" class="user-image" alt="User Image">
+              <span class="hidden-xs"><?php echo $admin['name']; ?></span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- User image -->
+              <li class="user-header">
+                <img src="" class="img-circle" alt="User Image">
+                <p>
+                  <?php echo $admin['name']; ?>
+                  <small><?php echo $admin['email']; ?></small>
+                </p>
+              </li>
+              <!-- Menu Body -->
+              <li class="user-body">
+                <div class="row">
+                  <div class="col-xs-12 text-center">
+                    <a href="index.php?module=user&action=changepass">Đổi Mật Khẩu</a>
+                  </div>
                 </div>
-              
+                <!-- /.row -->
+              </li>
+              <!-- Menu Footer-->
+              <li class="user-footer">
+                              <div class="pull-right">
+                  <a href="logout.php" class="btn btn-default btn-flat">Đăng Xuất</a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          
+        </ul>
+      </div>
+    </nav>
+  </header>
 
-              
-            </div>
+  <!-- =============================================== -->
+
+  <!-- Left side column. contains the sidebar -->
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- Sidebar user panel -->
+      <div class="user-panel">
+        <div class="pull-left image">
+          <img src="../img/messi_1.jpg" class="img-circle" alt="User Image">
         </div>
-    </div>  
-
-    <!-- SHOPPING-CART END -->
-    <!-- MAINMENU START -->
-    
-    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 no-padding-right menuarea">
-        <div class="mainmenu">
-           <nav>
-              <ul class="list-inline mega-menu">
-                 <li class="active"><a href="index.php">Trang Chủ</a>
-                 </li>
-                 <li>
-            <a href="about.php">Giới Thiệu</a>                          
+        <div class="pull-left info">
+          <p><?php echo $admin['name']; ?></p>
+          <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+        </div>
+      </div>
+      <!-- search form -->
+      <form action="#" method="get" class="sidebar-form">
+        <div class="input-group">
+          <input type="text" name="q" class="form-control" placeholder="Search...">
+          <span class="input-group-btn">
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                </button>
+              </span>
+        </div>
+      </form>
+      <!-- /.search form -->
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu" data-widget="tree">
+        <li>
+          <a href="../index.php" target="_blank">
+            <i class="fa fa-home"></i> <span>Website</span>
+          </a>
         </li>
-                 <li>
-                    <a href="product.php">Sản Phẩm</a>
-                    <!-- DRODOWN-MEGA-MENU START -->
-                    <div class="drodown-mega-menu">
-                       <div class="left-mega col-xs-6">
-                        <?php 
-                        foreach ($cats as $cat) {
-                            
-                           ?>
-                           <div class="mega-menu-list">
-                             <a class="mega-menu-title" href="category.php?id=<?php echo $cat['id'] ?>""><?php echo $cat['name']; ?></a>
-                             
-                         </div>
-                     <?php  } ?>
-                 </div>
-             </div>
-         </li>
-         <li>
-            <a href="contact.php">Liên Hệ</a>
-            <li><a href="blog.php">Tin Tức</a></li>
+        <li class="treeview">
+          <a href="#">
+            <i class="fa fa-dashboard"></i> <span>Quản Lý Sản Phẩm</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+             <li><a href="index.php?module=product"><i class="fa fa-circle-o"></i> Danh sách Sản Phẩm</a></li>
+            <li><a href="index.php?module=product&action=them-moi"><i class="fa fa-circle-o"></i> Thêm Mới Sản Phẩm</a></li>
+            <li><a href="index.php?module=category"><i class="fa fa-circle-o"></i> Danh mục Sản Phẩm</a></li>
+          </ul>
+         
         </li>
         
+       
         <li>
-          
+          <a href="index.php?module=order">
+            <i class="glyphicon glyphicon-shopping-cart"></i> <span>Quản Lý Đơn Hàng</span>
+          </a>
         </li>
         <li>
-            <?php
-                if (isset($_SESSION["name"]))
-                {
-
-                    ?>
-                    <li>
-                        <a href="khachhang.php"> Chào <?=$_SESSION["name"]?></a>
-                        
-                    </li>
-                     
-                    <?php
-                }
-                else
-                {
-                    ?>
-                    
-                    <li><a href="login-reg.php">Đăng nhập</a></li>
-                   
-                    <?php
-                }
-                
-                ?>
-               
+          <a href="index.php?module=thanhvien">
+            <i class="glyphicon glyphicon-user"></i> <span>Quản Lý Thành Viên</span>
+          </a>
         </li>
-
-    </ul>
-</nav>
-</div>
-</div>
-<!-- MAINMENU END -->
-</div>
-<div class="row">
- <!-- MOBILE MENU START -->
- <div class="col-sm-12 mobile-menu-area">
-    <div class="mobile-menu hidden-md hidden-lg" id="mob-menu">
-       <span class="mobile-menu-title">MENU</span>
-       <nav>
-          <ul>
-             <li><a href="index.php">Trang Chủ</a></li>   
-             
-             <li><a href="product.php">Sản Phẩm</a>
-                
-               <ul>
-                  <?php foreach ($cats as $cat) {
-                   ?>
-                   <li>
-                      
-                    <a href=""><?php echo $cat['name']; ?></a>
-                    
-                </li>
-            <?php } ?> 
-            
-        </ul>   
-
-    </li>
-    <li><a href="about.php">Giới Thiệu</a>
-
-    </li>
-    <li><a href="contact.php">Liên Hệ</a></li>
-    <li><a href="blog.php">Tin Tức</a></li>
-</ul>
-</nav>
-
-</div>                      
-</div>
-<!-- MOBILE MENU END -->
-</div>              
-</div>
-</header>
-
-
-<div class="modal fade" id="modal-msg">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Modal title</h4>
-            </div>
-            
-        </div>
-    </div>
-</div>
+        <li>
+          <a href="index.php?module=user">
+            <i class="glyphicon glyphicon-user"></i> <span>Quản Trị Viên</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+ <div class="content-wrapper">
