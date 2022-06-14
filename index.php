@@ -58,6 +58,7 @@
           </div>
           <?php 
           $productnb = mysqli_query($conn,"SELECT * FROM product WHERE status = 1 AND sale_price > 0 ORDER BY created LIMIT 3");
+
           ?>
           <div class="row">
             <?php foreach ($productnb as $np) {
